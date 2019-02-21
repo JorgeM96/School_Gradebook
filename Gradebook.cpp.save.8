@@ -1,0 +1,268 @@
+/* Author: Jorge Moreno
+   Instructor: Keathly
+   Date: 2/2/17
+   Description: This program is ment to be a gradebook that has a menu to hold functions for calculating different things for students and their courses. */
+
+#include <iostream>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+const int MEMORYBLOCK = 4;  //Used to increase memory allocation by this number.
+
+typedef struct student_info{   //1.Structure holds information about individual students
+int sID;		//Holds the students ID number
+string first;          //Holds the first name of the student
+string last;		//Holds the last name of the student
+int gradelvl;          //Holds the gradelvl of the student
+}student;
+
+typedef struct students_collection{   //2. Structure holds a collection of all students
+int studCnt;   //Holds the amount of students enrolled
+int studCap;   //Holds the max amount of students that can be enrolled.
+student *studList;
+}studentsC;
+
+typedef struct course_info{   //3.Structure holds information about an individual course.
+int Cnum;                     //Holds the course number
+string Cname;                 //Holds the course name           
+string teacher;              //Holds the name of teacher in that course
+}course;
+
+typedef struct courses_collection{  //4.Structure holds a collection of all courses
+int courseCnt;   //Holds the number of available courses
+int courseCap;   //Holds the max amount of courses
+course *courseList;
+}coursesC;
+
+typedef struct  registry{   //5.Structure holds information about a student and their course
+int regID;                 //Holds the registry number
+int sID;                  //Holds students ID
+int Cnums;                  //Holds course number
+int Grades;                    //Holds the student grades for a course.
+}registry;
+
+typedef struct registry_collection{   //6.Structure holds a collection of all registries.
+int regCnt;             //Holds the number of registries
+int regCap;              //Holds the limit of registries
+registry *regList;
+}registryC;
+
+//------------------------------------------------------------------------------------------------BELOW ARE ALL OF THE FUNCTIONS FOR THE MENU OPTIONS ------------------------------------------------------------------------------------
+
+void addCourse(coursesC * course2)  //1. This function adds a new course.
+{
+	if(course2->courseCnt == course2->courseCap)
+	{
+		coursesC *temp;
+		temp = new coursesC[course2->courseCap+MEMORYBLOCK];
+		for(int i=0; i < course2->courseCnt; i++)
+		{
+			temp[i]=course2[i];  
+			delete[] course2;
+		}
+		course2=temp;
+		course2->courseCap+=MEMORYBLOCK;
+	}
+	cout << "Please enter the new course number:" << endl;
+	cin >>  (course2->courseList[course2->courseCnt].Cnum);
+	cout << "Please enter the new course name: " << endl;
+	cin >> (course2->courseList[course2->courseCnt].Cname);
+	cout << "Please enter the instructor's name:" << endl;
+	cin >> (course2->courseList[course2->courseCnt].teacher);
+	course2->courseCnt +=1;
+}
+
+void addStudent(studentsC * stud)
+{
+	if(stud->studCnt == stud->studCap)
+	{
+		studentsC *temp;
+		temp = new studentsC[stud->studCap+MEMORYBLOCK];
+		for(int j=0; j < stud->studCnt; j++)
+		{
+			temp[j]=stud[j];
+			delete[] stud;
+		}
+		stud=temp;
+		stud->studCap+=MEMORYBLOCK;
+	}
+	cout << "Please enter your student's ID number:" << endl;
+	cin >> (stud->studList[stud->studCnt].sID);
+	cout << "Please enter the students first name:" << endl;
+	cin >> (stud->studList[stud->studCnt].first);
+	cout << "Please enter the students last name:" << endl;
+	cin >> (stud->studList[stud->studCnt].last);
+	cout << "Please enter the students gradelvl(number):" << endl;
+	cin >> (stud->studList[stud->studCnt].gradelvl);
+	stud->studCnt +=1;
+}
+
+void addstudtocourse(registryC * reg)
+{
+	if(reg->regCnt == reg->regCap)
+	{
+		registryC *temp;
+		temp = new registryC[reg->regCap+MEMORYBLOCK];
+		for(int k=0; k < reg->regCnt; k++)
+		{
+			temp[k]=reg[k];
+			delete[] reg;
+		}
+		reg=temp;
+		reg->regCap+=MEMORYBLOCK;
+	}
+	cout << "Enter the new Registry ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].regID);
+	cout << "Enter the student ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].sID);
+	cout << "Enter the course ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].Cnums);
+	reg->regCnt+=1;
+}
+
+void addGradetostud(registryC * reg)  //Fix
+{
+	if(reg->regCnt == reg->regCap)
+	{
+		registryC *temp;
+		temp = new registryC[reg->regCap+MEMORYBLOCK];
+		for(int k=0; k < reg->regCnt; k++)
+		{
+			temp[k]=reg[k];
+			delete[] reg;
+		}
+		reg=temp;
+		reg->regCap+=MEMORYBLOCK;
+	}
+	cout << "Enter the student's Registry ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].regID);
+	cout << "Enter the student's ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].sIDs);
+	cout << "Enter the student's course ID:" << endl;
+	cin >> (reg->regList[reg->regCnt].Cnums);
+	cout << "Enter the student's grade for this course:" << endl;
+	cin >> (reg->regList[reg->regCnt].Grades);
+	reg->regCnt+=1;
+}
+
+void prtStudGrades(registryC * reg) //Fix
+{	
+	cout << "In what course would you like to see your grades?" << endl;
+	cin >> reg->regList[reg->regCnt].Cnums;
+	cout << "What is your student ID: " << endl;
+	cin >> reg->regList[reg->regCnt].sID 
+	cout << "Grades for this student's courses:" << endl;
+	for(int i=0;i < reg->regCnt;i++)
+	{
+		cout << "Grade #" << i+1 << ": " << reg->regList[i].Grades << endl;
+	}
+}
+/*void prtStudCourse(registry * reg) //Fix
+{
+	cout << "What course would you like to see all students in?" << endl;
+	cin >>
+	cout << "The students in this course are: " << endl;
+	for(int i=0;i< reg->regCnt;i++)
+	{
+		cout << "Student # " << i+1 << ": " << reg->regList[i]
+*/
+//void avgStudCourse()
+
+void prtCourseList(coursesC * course2)
+{
+	for(int i=0;i < course2->courseCnt;i++)
+	{ 
+		cout << "Course ID #"<< i+1 << ": " << course2->courseList[i].Cnum << endl;
+		cout << "Course Name #" << i+1 <<": " << course2->courseList[i].Cname << endl;
+		cout << "Course Teacher: " << course2->courseList[i].teacher << endl;
+		cout << endl;
+	}
+}
+
+void prtStudList(studentsC * stud)
+{
+	for(int j=0;j < stud->studCnt ;j++)
+	{
+		cout << "Student ID #"<< j+1 << ": " << stud->studList[j].sID << endl;
+		cout << "Student's First Name: " << stud->studList[j].first << endl;
+		cout << "Student's Last Name: " << stud->studList[j].last << endl;
+		cout << "Student's Grade level: " << stud->studList[j].gradelvl << endl;
+		cout << endl;
+	}
+}
+
+//void avgCourse()
+
+//void storeBook()
+
+//void loadBook()
+
+void exitprogram()
+{
+	cout << "Gradebook will now close." << endl;
+	exit(EXIT_FAILURE);
+}
+
+
+
+
+
+int main()
+{
+	studentsC stud;
+	coursesC course2;
+	registryC reg;
+	int choice = -1;
+	int i;
+	stud.studCnt=0;
+	course2.courseCnt=0;
+	reg.regCnt=0;
+	stud.studCap = course2.courseCap = reg.regCap = MEMORYBLOCK;
+
+	stud.studList = new student[MEMORYBLOCK];   //Allocating memory
+
+	course2.courseList = new course[MEMORYBLOCK];
+
+	reg.regList = new registry[MEMORYBLOCK];
+
+	while(choice != 0)
+	{
+		cout <<" =========================================================" << endl;
+		cout<< "Please select one of the menu option numbers." << endl;
+		cout<< "1. Add a new course \n" << "2. Add a new student \n" << "3. Add a student to a course \n"
+		<< "4. Add grades for a student in a course \n" << "5. Print a list of all grades for a student in a course \n"
+		<< "6. Print a list of all students in a course \n" << "7. Compute the average for a student in a course \n" <<
+		"8. Print a list of all courses \n" << "9. Print a list of all students \n" << "10. Compute the average for a course \n"
+		<< "11. Store Grade Book (to a disk file) \n" << "12. Load Grade Book (from a disk file) \n" << "13. Exit Gradebook Program" << endl;
+		cout <<" =========================================================" << endl;
+		cin >> choice;
+
+		switch(choice)
+		{
+			case 1: addCourse(&course2);break;
+			case 2: addStudent(&stud);break;
+			case 3: addstudtocourse(&reg);break;
+			case 4: addGradetostud(&reg);break;
+		//	case 5: prtStudGrades(&reg);break;
+		//	case 6: prtStudCourse(&reg);break;
+		//	case 7: avgStudCourse(&stud);break;
+			case 8: prtCourseList(&course2);break;
+			case 9: prtStudList(&stud);break;
+		//	case 10: avgCourse(&course2);break;
+		//	case 11: storeBook(&reg);break;  
+		//	case 12: loadBook(&reg);break;        //SOme of these not done yet, also change paramters   
+			case 13: exitprogram();break;
+			default:
+				cout << "Please enter a number corresponding to a menu choice." << endl;
+				break;
+		}
+	} 
+
+		
+
+
+
+return 0;
+}	
+
